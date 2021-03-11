@@ -84,7 +84,7 @@ for slug_t in product(list_l1, list_l2, list_l3, list_n1):
         session.commit()
         records = []
         count = 0
-        print('.', end='')
+        print('.', end='', flush=True)
 
 session.bulk_save_objects(records)
 session.commit()

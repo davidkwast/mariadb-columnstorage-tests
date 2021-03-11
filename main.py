@@ -1,11 +1,17 @@
 from itertools import product
 from datetime import date
 
+from tqdm import tqdm
 from decouple import config
 
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import mapper
+
+
+table_name = 'item_values__big'
+rl = 26
+rn = 100
 
 
 engine = create_engine(config('DB_CONN'))
@@ -14,11 +20,11 @@ engine = create_engine(config('DB_CONN'))
 metadata = MetaData()
 
 table_item_values = Table(
-    'item_values',
+    table_name,
     metadata,
         Column('slug', String(16), nullable=False),
         Column('date', Date, nullable=False),
-        Column('value', Float, nullable=False),
+        Column('value', Float(53), nullable=False),
         # UniqueConstraint('slug', 'date', name='unique_slug_date'),
     mysql_engine='Columnstore',
     mysql_charset='utf8',
@@ -30,11 +36,11 @@ metadata.create_all(engine, checkfirst=True)
 
 metadata = MetaData()
 table_item_values = Table(
-    'item_values',
+    table_name,
     metadata,
         Column('slug', String(16), primary_key=True, nullable=False),
         Column('date', Date, primary_key=True, nullable=False),
-        Column('value', Float, nullable=False),
+        Column('value', Float(53), nullable=False),
         # UniqueConstraint('slug', 'date', name='unique_slug_date'),
     mysql_engine='Columnstore',
     mysql_charset='utf8',
@@ -53,10 +59,12 @@ session = Session()
 
 records = []
 count = 0
-list_l1 = [chr(n) for n in range(65,65+20)]
-list_l2 = [chr(n) for n in range(65,65+20)]
-list_l3 = [chr(n) for n in range(65,65+20)]
-list_n1 = ['{:04d}'.format(n) for n in range(1,11)]
+list_l1 = [chr(n) for n in range(65,65+rl)]
+list_l2 = [chr(n) for n in range(65,65+rl)]
+list_l3 = [chr(n) for n in range(65,65+rl)]
+list_n1 = ['{:04d}'.format(n) for n in range(1,1+rn)]
+
+pbar = tqdm(total=rl*rl*rl*rn*20*12)
 for slug_t in product(list_l1, list_l2, list_l3, list_n1):
     slug = ''.join(slug_t)
     # print(slug)
@@ -79,12 +87,13 @@ for slug_t in product(list_l1, list_l2, list_l3, list_n1):
             
             count += 1
     
-    if count > 100000:
+    if count > 250000:
         session.bulk_save_objects(records)
         session.commit()
+        pbar.update(len(records))
         records = []
         count = 0
-        print('.', end='', flush=True)
+        # print('.', end='', flush=True)
 
 session.bulk_save_objects(records)
 session.commit()

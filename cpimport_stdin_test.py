@@ -5,7 +5,7 @@ from datetime import date
 # from tqdm import tqdm
 
 
-db_name = 'mb'
+db_name = 'cs'
 table_name = 'item_values__uber'
 rl = 26
 rn = 1000

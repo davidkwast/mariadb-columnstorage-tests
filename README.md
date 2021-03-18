@@ -4,6 +4,12 @@
 set password for 'root'@localhost = password('xxxxx');
 
 CREATE DATABASE cs;
+
+CREATE TABLE cs.item_values(
+  `slug` varchar(16) NOT NULL,
+  `date` date NOT NULL,
+  `value` double NOT NULL
+) ENGINE=Columnstore DEFAULT CHARSET=utf8;
 ```
 
 ```

@@ -6,14 +6,14 @@ from datetime import date
 
 
 db_name = 'cs'
-table_name = 'item_values__uber'
+table_name = 'item_values'
 rl = 26
 rn = 1000
 
 '''
-DROP TABLE mb.item_values__uber;
+DROP TABLE cs.item_values;
 
-CREATE TABLE mb.item_values__uber (
+CREATE TABLE cs.item_values (
   `slug` varchar(16) NOT NULL,
   `date` date NOT NULL,
   `value` double NOT NULL
@@ -30,10 +30,9 @@ def send_data(data):
     process.communicate(data)
     
     process.wait()
-    
-    print('-'*80)
 
 
+total = 0
 records = []
 count = 0
 list_l1 = [chr(n) for n in range(65,65+rl)]
@@ -66,9 +65,14 @@ for slug_t in product(list_l1, list_l2, list_l3, list_n1):
             
             count += 1
     
-    if count > 50_000_000:
+    if count > 10_000_000:
         send_data( b'\n'.join(records) )
-        
+
+        print('-'*80)
+        total += count
+        print(total)
+        print('='*80)
+
         # pbar.update(len(records))
         records = []
         count = 0

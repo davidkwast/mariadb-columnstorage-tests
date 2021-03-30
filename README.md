@@ -1,5 +1,17 @@
 # mariadb-columnstorage-tests
 
+
+## Setup
+
+* https://downloads.mariadb.org/mariadb/repositories/#distro=Debian&distro_release=buster--buster&mirror=insacom&version=10.5
+
+### Debian Server on Cloud for tests
+
+```sql
+grant all privileges on *.* to 'root'@'%.%.%.%' IDENTIFIED BY 'xxxx' WITH GRANT OPTION
+```
+### localhost / unix-socket
+
 ```sql
 set password for 'root'@localhost = password('xxxxx');
 
